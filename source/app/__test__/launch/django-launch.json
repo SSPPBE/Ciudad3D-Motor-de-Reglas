@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Django",
+        "type": "python",
+        "request": "launch",
+        "stopOnEntry": false,
+        "pythonPath": "${workspaceRoot}/src/backend/env/bin/python3.9",
+        "program": "${workspaceRoot}/src/backend/src/app/manage.py",
+          "args": [
+              "-W",
+              "ignore",
+              "runserver",
+              "--path_env",
+              "./src/backend/src/app/__test__"
+          ],
+          "debugOptions": [
+              "WaitOnAbnormalExit",
+              "WaitOnNormalExit",
+              "RedirectOutput",
+              "DjangoDebugging"
+          ]
+      }
+    ]
+  }

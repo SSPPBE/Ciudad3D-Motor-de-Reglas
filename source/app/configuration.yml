@@ -1,0 +1,850 @@
+db_pdi:
+  variable: DB_PDI
+
+db_cd3:
+  variable: DB_CD3
+
+fabric_repository:
+  descriptor: fabric
+fabric_file_repository:
+  layer: tejido
+fabric_service:
+  buffer: 1
+  descriptor: 'consolidate'
+  ranges:
+    - from: 0
+      from_inclusive: true
+      to: 60
+      to_inclusive: false
+      type: NC
+    - from: 60
+      from_inclusive: true
+      to: 80
+      to_inclusive: false
+      type: PC
+    - from: 80
+      from_inclusive: true
+      to: 100
+      to_inclusive: false
+      type: C
+      consolidated: true
+    - from: 100
+      from_inclusive: true
+      to: 
+      to_inclusive: false
+      type: E
+      consolidated: true
+block_repository:
+  descriptor: block
+block_file_repository:
+  layer: manzanas
+block_service:
+  base_line:
+    valid_type:
+      - 'TIPICA'
+    valid_line_size: 4
+    lbi:
+      divided_by: 3
+    lfi:
+      divided_by: 2
+  minimal_band:
+    buffer: 16
+  export:
+    source: Cur3D
+  not_valid_build_type:
+    - 'ESPACIO_PUBLICO'
+
+process_service:
+  dxf:
+    root: 'ROOT_FOLDER'
+    relative: 'MEDIA'
+  transformation:
+    mapbox:
+      from: "97433"
+      to: "4326"    
+  projection:
+    "97433": |
+       +proj=tmerc +lat_0=-34.629269 +lon_0=-58.4633 +k=0.9999980000000001 +x_0=100000 +y_0=100000 
+       +ellps=intl +units=m +no_defs
+    "4326": EPSG:4326
+  output:
+
+    basic:
+      phases:
+        - code: export_basic
+
+        - code: save_basic
+          projection: '97433'
+          driver: GPKG
+          geo_attribute: geom
+          extension: gpkg    
+          group: True    
+
+    cd3:
+      phases:
+        - code: export_basic
+          transformation: mapbox
+
+        - code: save_basic
+          projection: '4326'
+          driver: GPKG
+          geo_attribute: geom
+          group: True
+          extension: gpkg    
+
+        - code: save_basic
+          projection: '4326'
+          driver: GeoJSON
+          geo_attribute: geom
+          group: False    
+          extension: json
+
+        - code: save_cd3_tiles
+          group: True    
+
+        - code: save_cd3_tiles_nfs
+
+#       - code: save_cd3_tiles_ftp
+
+        - code: export_cd3_info
+
+        - code: save_cd3_data
+
+    dxf:
+      phases:
+        - code: export_cad
+
+        # - code: save_basic
+        #   projection: '97433'
+        #   driver: GPKG
+        #   geo_attribute: geom
+        #   extension: gpkg    
+        #   group: True    
+
+        # https://stackoverflow.com/questions/58722235/python-module-to-merge-dxf-files
+        - code: save_basic
+          projection: '97433'
+          driver: DXF
+          geo_attribute: geom
+          extension: dxf
+          group: False 
+        #  zip: True
+          only_geom: True
+
+        # - code: save_basic
+        #   projection: '4326'
+        #   driver: GeoJSON
+        #   geo_attribute: geom
+        #   extension: json
+        #   group: False 
+        #   only_geom: True
+
+        - code: save_dxf
+        #   group: True    
+
+  save_export:
+    transformation: mapbox
+    gpkg:
+      projection: '4326'
+      extension: 'gpkg'
+      driver: GPKG
+      geo_attribute: geom
+      group: True    
+  save:
+    transformation: 
+    gpkg:
+      projection: '97433'      
+      extension: 'gpkg'
+      driver: GPKG
+      geo_attribute: geom
+      group: True    
+  save_dxf:
+    transformation: 
+    gpkg:
+      projection: '97433'      
+      extension: 'dxf'
+      driver: DXF
+      geo_attribute: geom
+      group: False   
+
+ciudad3d_service:
+  save:
+    geojson:
+      projection: '4326'
+      extension: 'json'
+      driver: GeoJSON
+      geo_attribute: geom
+      group: False
+  copy:
+    host: 'SFTP_HOST'
+    port: 'SFTP_PORT'
+    user: 'SFTP_USER'
+    pass: 'SFTP_PASSWORD'
+    remote: 'SFTP_REMOTE'
+  nfs:
+    root: 'ROOT_FOLDER'
+    relative: 'TILES'
+
+  tippecanoe:
+    default:
+      - -l 
+      - default 
+      - -Z10 
+      - -z22 
+      - -pk 
+      - --force
+    aph_ssregic:
+      - --no-line-simplification
+      - --drop-fraction-as-needed      
+    banda_minima:
+      - --drop-fraction-as-needed
+    codigo_urbanistico: 
+      - --drop-fraction-as-needed
+    cur_consolidados:
+      - --drop-fraction-as-needed
+    cur_restricciones:
+    cur_riesgo_arqueologico:    
+      - --no-line-simplification
+    e34m:
+      - --drop-fraction-as-needed
+    lfi:
+    lib:
+      - --drop-fraction-as-needed      
+    linea_oficial:
+      - --drop-fraction-as-needed            
+    manzana:
+      - --no-line-simplification
+    parcela:
+      - --drop-fraction-as-needed      
+    cur_riesgo_hidrico:
+    rivolta:
+      # Falta exportacion
+    tejido:
+      - --detect-shared-borders
+      - -no-tile-size-limit
+      - --extend-zooms-if-still-dropping
+      - --coalesce-densest-as-needed
+    volumen_edif:                  
+      - --drop-fraction-as-needed      
+    erelm:
+      # Se descarta
+    esquina_manzana:
+      # Se descarta
+    frentesparcelas:
+      # Se descarta
+    lado_de_manzana:
+      # Se descarta
+    cur_secciones:
+      # Se descarta
+
+file_service:      
+  output:
+    name:
+    random: true
+    folder_root: 'ROOT_FOLDER'
+    folder_relative: 'MEDIA'
+    context: download
+    geo_attribute: geom
+
+corner_area_service:
+  descriptor: 'corner_area'
+  buffer: 2
+  corner_area:
+    distance: 34
+    divided: 4
+    plus: 9      
+  extension:
+    descriptor: 'extension'
+    angles:
+      - from: 0
+        from_inclusive: true
+        to: 80
+        to_inclusive: false
+        distance: 18
+      - from: 80
+        from_inclusive: true
+        to: 180
+        to_inclusive: true
+        distance: 9
+    parallel:
+      distance: 9
+      scale_x: 10
+      scale_y: 10
+  irregular:
+    buffer_intersection: 3
+    buffer_opossite: 100
+    buffer_bottom: 3
+
+lot_repository:
+  descriptor: lot
+lot_file_repository:
+  layer: parcelas
+lot_service:
+  rivolta:
+    buffer: 3
+    percentage: 60
+  cataloged:
+    - CAUTELAR
+    - ESTRUCTURAL
+    - ESPECIAL
+    - INTEGRAL          
+  not_valid_block:
+    - ATIPICA
+  enrase:
+    buffer: 3
+    difference_height: 1.40
+
+build_type_service: 
+  component:
+    main-lbi:
+      code: "cuerpo principal"
+      no_corner_area: true
+      substract:
+        "1":
+          geometry: lbi
+          poligonize: true 
+        "2":
+          geometry: "official_line"
+          buffer: 10
+
+    retire-lbi-front:
+      code: "retiro 1"
+      no_corner_area: true
+      height: 3
+      substract:
+        "1":
+          geometry: lbi
+          poligonize: true 
+        "2":
+          geometry: "official_line"
+          buffer: 10
+        "3":
+          geometry: "dissolve_lot"
+          difference_buffer: 2 
+
+    main-lfi:
+      code: "cuerpo principal"
+      substract:
+        "1":
+          geometry: "lfi_extension"
+          poligonize: true 
+        "2":
+          geometry: "official_line"
+          buffer: 10
+
+    main-retire:
+      code: "cuerpo principal"
+      height: 6
+      substract:
+        "1":
+          geometry: "lfi_extension"
+          poligonize: true 
+        "2":
+          geometry: "official_line"
+          buffer: 10
+        "3":
+          geometry: "dissolve_lot"
+          difference_buffer: 3 
+
+    main-retire-back:
+      code: "cuerpo principal"
+      height: 6
+      substract:
+        "1":
+          geometry: "lfi_extension"
+          poligonize: true 
+        "2":
+          geometry: "lfi_extension"
+          poligonize: true 
+          buffer: 5
+        "3":
+          geometry: "official_line"
+          buffer: 10
+        "4":
+          geometry: "dissolve_lot"
+          difference_buffer: 3 
+
+    retire-lfi-front:
+      code: "retiro 1"
+      height: 3
+      substract:
+        "1":
+          geometry: "lfi_extension"
+          poligonize: true 
+        "2":
+          geometry: "official_line"
+          buffer: 10
+        "3":
+          geometry: "dissolve_lot"
+          difference_buffer: 2 
+
+    retire-lfi-front-aph:
+      code: "retiro 2"
+      height: 3
+      substract:
+        "1":
+          geometry: "lfi_extension"
+        "2":
+          geometry: "official_line"
+          buffer: 10
+        "3":
+          geometry: "dissolve_lot"
+          difference_buffer: 4 
+        "4":
+          lot_geometry: "division_line"
+          difference_buffer: 3 
+          
+    retire-lfi-front-back:
+      code: "retiro 2"
+      height: 4
+      substract:
+        "1":
+          geometry: "lfi_extension"
+        "2":
+          geometry: "lfi_extension"
+          buffer: 4
+        "3":
+          geometry: "official_line"
+          buffer: 10
+        "4":
+          geometry: "dissolve_lot"
+          difference_buffer: 4 
+        "5":
+          lot_geometry: "division_line"
+          difference_buffer: 3           
+
+    basement:
+      code: "basamento"      
+      substract:
+        "1":
+          geometry: lbi
+          poligonize: true 
+        "2":
+          geometry: "official_line"
+          buffer: 10
+
+  build_type:
+    - code: "USAB1"
+      code2: "USAB 1"
+      accept_rivolta: true
+      uni_edif: 9
+      height: 9
+      ae26: USAB2
+      components:
+        - main-lbi:
+            height: 9
+    - code: "USAB2"
+      code2: "USAB 2"
+      accept_rivolta: true
+      uni_edif: 11.6
+      height: 11.6      
+      ae26: USAM
+      components:
+        - main-lbi:
+            height: 11.6 
+        - retire-lbi-front: 
+    - code: "USAM"
+      accept_rivolta: true
+      uni_edif: 17.2
+      height: 17.2
+      consolidate_filter: 4    
+      components:
+        - main-lfi:
+            height: 17.2 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+    - code: "USAA"
+      code2: "USAA"
+      ae26: CM      
+      accept_rivolta: true
+      uni_edif: 22.8
+      consolidate_filter: 4          
+      height: 22.8    
+      components:
+        - main-lfi:
+            height: 22.8 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+    - code: "CM"
+      accept_rivolta: true
+      uni_edif: 31.2
+      height: 31.2         
+      consolidate_filter: 7          
+      components:
+        - basement:
+            height: 6
+        - main-lfi:
+            height: 25.2 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+    - code: "CA"
+      accept_rivolta: true
+      uni_edif: 38
+      height: 38             
+      consolidate_filter: 7        
+      components:
+        - basement:
+            height: 6
+        - main-lfi:
+            height: 32 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+    - code: "APH-44-ZONA1"
+      dist_esp: APH 44
+      zona_1: Zona 1
+      height: 22.8          
+      components:
+        - main-lfi:
+            height: 22.8
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+    - code: "APH-50-ZONA1"
+      dist_esp: APH 50
+      zona_1: Zona 1
+      height: 30.0                
+      components:
+        - basement:
+            height: 6
+        - main-lfi:
+            height: 24
+    - code: "APH-50-ZONA2"
+      dist_esp: APH 50
+      zona_1: Zona 2
+      height: 38.0                      
+      components:
+        - main-lfi:
+            height: 38
+
+    - code: "APH-51-ZONA1-CALLE"
+      dist_esp: APH 51
+      zona_1: Zona 1
+      tipo_calle: CALLE
+      height: 21
+      components:
+        - basement:
+            height: 10        
+        - main-lfi:
+            height: 11
+        - retire-lfi-front:
+        - retire-lfi-front-aph:
+
+    - code: "APH-51-ZONA2-CALLE"
+      dist_esp: APH 51
+      zona_1: Zona 2
+      tipo_calle: CALLE
+      height: 21
+      components:
+        - basement:
+            height: 10        
+        - main-lfi:
+            height: 11
+        - retire-lfi-front:
+        - retire-lfi-front-aph:            
+
+    - code: "APH-51-ZONA3-CALLE"
+      dist_esp: APH 51
+      zona_1: Zona 1
+      tipo_calle: CALLE
+      height: 21
+      components:
+        - basement:
+            height: 7        
+        - main-lfi:
+            height: 14
+        - retire-lfi-front:
+        - retire-lfi-front-aph:   
+
+    - code: "APH-51-ZONA1-AVENIDA"
+      dist_esp: APH 51
+      zona_1: Zona 1
+      tipo_calle: AVENIDA
+      height: 32            
+      components:
+        - basement:
+            height: 10        
+        - main-lfi:
+            height: 22
+        - retire-lfi-front:
+        - retire-lfi-front-aph:               
+
+    - code: "APH-51-ZONA2-AVENIDA"
+      dist_esp: APH 51
+      zona_1: Zona 2
+      tipo_calle: AVENIDA
+      height: 32            
+      components:
+        - basement:
+            height: 10        
+        - main-lfi:
+            height: 22
+        - retire-lfi-front:
+        - retire-lfi-front-aph:               
+
+    - code: "APH-51-ZONA3-AVENIDA"
+      dist_esp: APH 51
+      zona_1: Zona 3
+      tipo_calle: AVENIDA
+      height: 32            
+      components:
+        - basement:
+            height: 7        
+        - main-lfi:
+            height: 25
+        - retire-lfi-front:
+        - retire-lfi-front-aph:       
+
+    - code: "U-5"
+      dist_esp: U 5
+      zona_1: Subdistrito 1
+      height: 6            
+      components:
+        - main-retire-back:
+
+    - code: "U-20-Zona 2A"
+      dist_esp: U 20
+      zona_1: Zona 2A
+      height: 9            
+      components:
+        - main-lfi:
+            height: 9  
+        - retire-lfi-front:
+
+    - code: "U-20-Zona 2B"
+      dist_esp: U 20
+      zona_1: Zona 2B
+      height: 9            
+      components:
+        - main-lfi:
+            height: 9  
+        - retire-lfi-front:
+
+    - code: "U-20-Zona 3"
+      dist_esp: U 20
+      zona_1: Zona 3    
+      height: 18    
+      components:
+        - main-lfi:
+            height: 18 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+
+    - code: "U-20-Zona 4"
+      dist_esp: U 20
+      zona_1: Zona 4    
+      height: 21    
+      components:
+        - main-lfi:
+            height: 21 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+
+    - code: "U-20-Zona 5"
+      dist_esp: U 20
+      zona_1: Zona 5    
+      height: 24    
+      components:
+        - main-lfi:
+            height: 24 
+        - retire-lfi-front:
+        - retire-lfi-front-back:
+
+    - code: "U-23-Zona 2"
+      dist_esp: U 23
+      zona_1: Zona 2
+      height: 11.6            
+      components:
+        - main-retire-back:
+            height: 11.6 
+        - retire-lfi-front:
+
+    - code: "U-23-Zona 10"
+      dist_esp: U 23
+      zona_1: Zona 10
+      height: 10.5           
+      components:
+        - main-retire-back:
+            height: 10.5 
+        - retire-lfi-front:
+
+    - code: "U-33-Zona B"
+      dist_esp: U 33
+      zona_1: Zona B
+      height: 11.2           
+      components:
+        - main-lfi:
+            height: 11.2 
+        - retire-lfi-front:
+            height: 2.8
+
+    - code: "U-34"
+      dist_esp: U 34
+      zona_1: Zona 1
+      height: 11.6           
+      components:
+        - main-lfi:
+            height: 11.6 
+        - retire-lbi-front:
+            height: 3
+
+    - code: "APH 5"
+      dist_esp: APH 5
+      height: 10.5           
+      components:
+        - main-lbi:
+            height: 10.5 
+        - retire-lbi-front:
+            height: 3
+
+    - code: "APH 53"
+      dist_esp: APH 53
+      height: 9           
+      components:
+        - main-lfi:
+            height: 9 
+        - retire-lfi-front:
+            height: 3
+
+    - code: "U 28"
+      dist_esp: U 28
+      height: 8.8           
+      components:
+        - main-retire-back:
+            height: 8.8 
+        - retire-lfi-front-back:
+            code: "retiro 1"
+            height: 3
+            substract:
+              "2":
+                geometry: "lfi_extension"
+                buffer: 3
+              "4":
+                geometry: "dissolve_lot"
+                difference_buffer: 3 
+
+
+    - code: "AE-26"
+      dist_esp: AE 26
+      components:
+
+    - code: "URBANIZACION PARQUE"
+    # - code: "ESPACIO_PUBLICO"
+      dist_esp: UP          
+      components:
+    # - code: "ESPACIO_PUBLICO"
+    - code: "URBANIZACION PARQUE"    
+      dist_esp: UP          
+      zona_1: Zona 1
+      components:
+    - code: "ESPACIO_PUBLICO"
+      dist_esp: Espacio Publico          
+      components:
+    - code: "ESPACIO_PUBLICO"
+      dist_esp: UP/APH 2          
+      components:
+
+restriction_service:
+  name: restriccion-valida
+  origin: restriction-block
+  scalar-x: 100 
+  scalar-y: 100
+  buffer: 500
+  valid_type:
+    - 'Línea de afectación'
+    - 'Línea particularizada'
+    - 'Apertura de calle'
+  valid_obs:
+    - 'VERIFICADO'
+  valid_gis_type: 'MultiLineString'         
+restriction_repository:
+  descriptor: restriction
+restriction_file_repository:
+  layer: restricciones
+
+geometry:
+  fabric_dissolve:
+  fabric:
+  block:
+    name: manzanas
+    layer: manzanas
+  lot:
+    name: 'parcelas'
+    layer: 'parcelas'
+    validate_protection:
+      - 'CAUTELAR'
+      - 'ESTRUCTURAL'
+      - 'ESPECIAL'
+      - 'INTEGRAL'
+
+  restriction:
+    name: restricciones
+    layer: restricciones
+  block-restriction:
+    name: manzana-restriccion
+  restriction-block:
+    name: restriccion-manzana
+  restriction-done:
+    name: restriccion-valida
+    origin: restriction-block
+    scalar-x: 100 
+    scalar-y: 100
+    buffer: 500
+    validate-type:
+      - 'Linea de afectacion'
+      - 'Linea particularizada'
+      - 'Apertura de calle'
+    validate-obs:
+      - 'VERIFICADO'      
+  lbi:
+    name: lbi
+    divided-by: 3
+    origin: block-line
+  lbi-line:    
+    name: lbi-lineas    
+  lfi:
+    name: lfi
+    divided-by: 4
+    origin: block-line
+  lfi-line:    
+    name: lfi-lineas    
+  block-line:
+    name: manzana-linea
+    origin: block-restriction
+  official_line:
+    name: linea-oficial
+  minimal_band:
+    name: banda-minima
+  buildability_1:
+    name: cuerpo-principal
+    lo: block-line
+  buildability_2:
+    name: retiro-1
+    sign: -1
+    lo: block-line
+  buildability_3:
+    name: retiro-2    
+  real:
+    name: tejido
+    layer: tejido
+    
+height:
+  "9.0":
+    "buildability_1": 9
+  "11.6":
+    "buildability_1": 11.6
+    "buildability_2": 2.6
+    "retire_2": 2
+  "23.3":
+    "lfi": true
+  "35.5":
+    "lii": true     
+  "23.3":
+    "lfi": true
+  "35.5":
+    "lii": true     
+
+
+output:
+#  name: result
+  random: true
+  folder: media/tmp
+  context: download

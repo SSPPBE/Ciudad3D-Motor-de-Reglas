@@ -1,0 +1,27 @@
+@startuml
+
+database PDI [
+ PDI
+]
+
+component ALGORITMO #yellow [
+ Algoritmo Application
+]
+
+database CD3 [
+ CD3
+]
+
+component EPOK #yellow [
+ EPOK Application
+]
+
+
+[PDI] -> [ALGORITMO] :Informacion de Origen
+
+[ALGORITMO] -> [CD3] :Resultado
+
+[CD3] <-> [EPOK] 
+
+
+@enduml

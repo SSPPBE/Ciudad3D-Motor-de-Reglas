@@ -1,0 +1,24 @@
+@startuml
+
+title "Main Flow Sequence Diagram"
+
+control "Block Service" as BS
+control "Restriction Service" as RS
+control "Lot Service" as LS
+control "Fabric Service" as FS
+control "Corner Area Service" as CS
+
+BS -> RS : Find Restrictions
+BS -> BS : Build Line Blocks
+BS -> BS : Build Base Lines
+BS -> BS : Build Official Line
+BS -> LS : Build Official Line for Lot
+BS -> BS : Resolve AE26
+BS -> BS : Build Minimal Band
+BS -> FS : Build and Find Consolidated
+BS -> CS : Build Corner Area
+BS -> LS : Find Rivolta
+BS -> LS : Find Leveling
+BS -> LS : Build Buildability
+
+@enduml

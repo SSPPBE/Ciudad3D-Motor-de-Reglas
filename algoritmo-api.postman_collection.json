@@ -1,0 +1,342 @@
+{
+	"info": {
+		"_postman_id": "301431bb-0aa3-46fe-a395-3b09b0f9ed32",
+		"name": "gcba",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6883832"
+	},
+	"item": [
+		{
+			"name": "launch",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "apikey",
+						"value": "88d346b3-00ed-4793-8bb2-179e4ff96b81",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"blocks\":[\"042-067\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/launch/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"launch",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "launch",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"blocks\":[\"042-067\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/launch/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"launch",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Aug 2022 11:51:22 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.9.5"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "224"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"folder\": \"media/tmp\",\n        \"simple_name\": \"\",\n        \"root_name\": \"d29997ff-3fbd-400d-80c1-efa5db769795\",\n        \"path\": \"./media/tmp/d29997ff-3fbd-400d-80c1-efa5db769795.gpkg\",\n        \"url\": \"/download/d29997ff-3fbd-400d-80c1-efa5db769795.gpkg\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "download",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "apikey",
+						"value": "88d346b3-00ed-4793-8bb2-179e4ff96b81",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"block\":\"042-067\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/download/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"download",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "launch",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"blocks\":[\"042-067\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/launch/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"launch",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Aug 2022 11:51:22 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.9.5"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "224"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"folder\": \"media/tmp\",\n        \"simple_name\": \"\",\n        \"root_name\": \"d29997ff-3fbd-400d-80c1-efa5db769795\",\n        \"path\": \"./media/tmp/d29997ff-3fbd-400d-80c1-efa5db769795.gpkg\",\n        \"url\": \"/download/d29997ff-3fbd-400d-80c1-efa5db769795.gpkg\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "health",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"block\":\"042-067\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "launch",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"blocks\":[\"042-067\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/launch/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"launch",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Aug 2022 11:51:22 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.9.5"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "224"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"folder\": \"media/tmp\",\n        \"simple_name\": \"\",\n        \"root_name\": \"d29997ff-3fbd-400d-80c1-efa5db769795\",\n        \"path\": \"./media/tmp/d29997ff-3fbd-400d-80c1-efa5db769795.gpkg\",\n        \"url\": \"/download/d29997ff-3fbd-400d-80c1-efa5db769795.gpkg\"\n    }\n]"
+				}
+			]
+		}
+	]
+}
